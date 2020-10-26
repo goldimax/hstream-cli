@@ -21,6 +21,32 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- servant
+- servant-swagger
+- swagger2
+- servant-server
+- bytestring
+- warp
+- warp-tls
+- mtl
+- aeson
+- constraints
+- time
+- text
+- haskeline
+- http-conduit
+- base64-string
+- base64
+- containers
+- random
+- servant-cli 
+- servant-client 
+- optparse-applicative
+- http-client
+- vinyl
+- uuid
+- pretty-simple
+- singletons
 
 library:
   source-dirs: src
@@ -28,7 +54,7 @@ library:
 executables:
   server:
     main:                Main.hs
-    source-dirs:         Server
+    source-dirs:         server
     ghc-options:
     - -threaded
     - -rtsopts
@@ -37,7 +63,7 @@ executables:
     - hstream-cli
   client:
     main:                Main.hs
-    source-dirs:         Client
+    source-dirs:         client
     ghc-options:
     - -threaded
     - -rtsopts

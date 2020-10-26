@@ -1,0 +1,32 @@
+/
+├─ create/
+│  ├─ database/
+│  │  └─•
+│  ├─ stream/
+│  │  └─•
+│  └─ table/
+│     └─•
+├─ delete/
+│  ├─ stream/
+│  │  └─ <capture>/
+│  │     └─•
+│  └─ table/
+│     └─ <capture>/
+│        └─•
+├─ query/
+│  ├─ stream/
+│  │  └─ <capture>/
+│  │     └─•
+│  └─ table/
+│     └─ <capture>/
+│        └─•
+├─ show/
+│  ├─ databases/
+│  │  └─•
+│  ├─ streams/
+│  │  └─•
+│  └─ tables/
+│     └─•
+└─ use/
+   └─ <capture>/
+      └─•
