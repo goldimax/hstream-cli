@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: setup
+        run: sudo apt-get install haskell-platform
+
+      - name: build
+        run: stack build
+
+      - name: test
+        run: stack test
