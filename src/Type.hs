@@ -20,7 +20,7 @@ data Resp
 
 
 
--- | Requir SQL
+-- | Require SQL
 -- required sql 
 data ReqSql 
     = ReqSql {

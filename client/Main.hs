@@ -61,51 +61,51 @@ main = do
     runInputT def $ loop cf
    where
        loop :: Config -> InputT IO ()
-       loop c@Config{..}= do
+       loop c@Config{..} = do
            minput <- getInputLine "> "
            case minput of
                Nothing -> return ()
                Just ":q" -> liftIO  (putStrLn "Finish!") >> return ()
                Just xs -> do
                  case words xs of 
-                   "show" : "databases": _ -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/show/databases") >>= handleReq (Proxy :: Proxy [DatabaseInfo])
+                   "show" : "databases" : _ -> 
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/show/databases") >>= handleReq (Proxy :: Proxy [DatabaseInfo])
 
                    "create" : "database" : name : content -> do 
-                        re <- liftIO $ parseRequest (curl ++":" ++ show cport ++ "/create/database")
+                        re <- liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/create/database")
                         liftIO $ handleReq (Proxy :: Proxy DatabaseInfo) 
                             $ setRequestBodyJSON (Database (pack name) (pack $ unwords content)) 
                             $ setRequestMethod "POST" re
                    "use" : "database" : dbid -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/use/" ++ unwords dbid) >>= handleReq (Proxy :: Proxy Resp)
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/use/" ++ unwords dbid) >>= handleReq (Proxy :: Proxy Resp)
 
                         ---------------------------------------------------------------------------------------------------------------
 
-                   "show" : "tables": _ -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/show/tables") >>= handleReq (Proxy :: Proxy [TableInfo])
+                   "show" : "tables" : _ -> 
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/show/tables") >>= handleReq (Proxy :: Proxy [TableInfo])
                    "create" : "table" : name  -> do 
-                        re <- liftIO $ parseRequest (curl ++":" ++ show cport ++ "/create/table")
+                        re <- liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/create/table")
                         liftIO $ handleReq (Proxy :: Proxy TableInfo) 
-                            $ setRequestBodyJSON (Table (pack $ unwords name) ) 
+                            $ setRequestBodyJSON (Table (pack $ unwords name)) 
                             $ setRequestMethod "POST" re
                    "query" : "table" : tbid -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/query/table/" ++ unwords tbid) >>= handleReq (Proxy :: Proxy TableInfo)
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/query/table/" ++ unwords tbid) >>= handleReq (Proxy :: Proxy TableInfo)
                    "delete" : "table" : dbid -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/delete/table/" ++ unwords dbid) >>= handleReq (Proxy :: Proxy Resp)
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/delete/table/" ++ unwords dbid) >>= handleReq (Proxy :: Proxy Resp)
 
                         ---------------------------------------------------------------------------------------------------------------
 
-                   "show" : "streams": _ -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/show/streams") >>= handleReq (Proxy :: Proxy [StreamInfo])
+                   "show" : "streams" : _ -> 
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/show/streams") >>= handleReq (Proxy :: Proxy [StreamInfo])
                    "create" : "stream" : name : sql  -> do 
-                        re <- liftIO $ parseRequest (curl ++":" ++ show cport ++ "/create/stream")
+                        re <- liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/create/stream")
                         liftIO $ handleReq (Proxy :: Proxy StreamInfo) 
                             $ setRequestBodyJSON (StreamSql (pack $ name) (ReqSql 1 (pack $ unwords sql))) 
                             $ setRequestMethod "POST" re
                    "query" : "stream" : tbid -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/query/stream/" ++ unwords tbid) >>= handleReq (Proxy :: Proxy StreamInfo)
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/query/stream/" ++ unwords tbid) >>= handleReq (Proxy :: Proxy StreamInfo)
                    "delete" : "stream" : dbid -> 
-                        liftIO $ parseRequest (curl ++":" ++ show cport ++ "/delete/stream/" ++ unwords dbid) >>= handleReq (Proxy :: Proxy Resp)
+                        liftIO $ parseRequest (curl ++ ":" ++ show cport ++ "/delete/stream/" ++ unwords dbid) >>= handleReq (Proxy :: Proxy Resp)
                    [] -> return ()
                    _  -> liftIO $ putStrLn "invalid input"
 

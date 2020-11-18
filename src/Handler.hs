@@ -47,8 +47,8 @@ app1 = serve server1API server1
 
 getUUID :: Handler UUID 
 getUUID = (liftIO nextUUID ) >>= \case 
-    Nothing ->  getUUID
-    Just v -> return v
+    Nothing -> getUUID
+    Just v  -> return v
 
 gs = getUUIDs 4 
 
