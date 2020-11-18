@@ -61,8 +61,10 @@ handleUseDatabase _ = pure $ OK "succuess"
 handleShowTables :: Handler [TableInfo]
 handleShowTables = replicateM 3 $ TableInfo "table name" <$> getUUID
 
-handleCreateTable :: Table -> Handler TableInfo
-handleCreateTable t = TableInfo (ctname t) <$> getUUID
+getUUID :: Handler UUID 
+getUUID = (liftIO nextUUID ) >>= \case 
+    Nothing -> getUUID
+    Just v  -> return v
 
 handleQueryTable :: Applicative f => UUID -> f TableInfo
 handleQueryTable t = pure $ TableInfo "random table" t
