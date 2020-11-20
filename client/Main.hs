@@ -27,56 +27,22 @@ import Network.HTTP.Simple
     setRequestMethod,
   )
 import Options.Applicative
-  ( Parser,
-    auto,
-    execParser,
-    fullDesc,
-    help,
-    helper,
-    info,
-    long,
-    metavar,
-    option,
-    progDesc,
-    short,
-    strOption,
-    value,
-    (<**>),
-  )
-import System.Console.Haskeline
-  ( Completion,
-    CompletionFunc,
-    InputT,
-    Settings,
-    SomeException,
-    completeWord,
-    defaultSettings,
-    getInputLine,
-    runInputT,
-    setComplete,
-    simpleCompletion,
-  )
-import Text.Pretty.Simple (pPrint)
-import Type
-  ( Database (Database),
-    DatabaseInfo,
-    ReqSql (ReqSql),
-    Resp,
-    StreamInfo,
-    StreamSql (StreamSql),
-    Table (Table),
-    TableInfo,
-  )
+import Data.Proxy
+import Text.Pretty.Simple
+import Data.UUID
+import Data.Maybe
+import System.Console.Haskeline.Completion
+import Data.List
 
-data Config = Config
-  { curl :: String,
-    cport :: Int
-  }
-  deriving (Show, Eq, Generic, Typeable, FromJSON, ToJSON)
+data Config 
+    = Config {
+      curl :: String 
+    , cport :: Int
+    } deriving (Show, Eq, Generic, Typeable, FromJSON, ToJSON)
 
-parseConfig :: Parser Config
-parseConfig =
-  Config
+
+parseConfig :: Parser Config 
+parseConfig = Config 
     <$> strOption (long "baseUrl" <> metavar "string" <> short 'b' <> help "base url valur")
     <*> option auto (long "port" <> value 8081 <> short 'p' <> help "port value" <> metavar "INT")
 
@@ -89,16 +55,39 @@ def = setComplete compE defaultSettings
 compE :: CompletionFunc IO
 compE = completeWord Nothing [] compword
 
-compword :: Monad m => String -> m [Completion]
-compword "s" = return [simpleCompletion "show"]
-compword "sh" = return [simpleCompletion "show"]
-compword "sho" = return [simpleCompletion "show"]
-compword "show " = return $ map simpleCompletion ["show tables", "show databases", "show streams"]
-compword "t" = return [simpleCompletion "table"]
-compword "" = return $ map simpleCompletion ["show", "query", "delete", "create", "use"]
-compword _ = return []
+-- should make sure there is no empty command
+wordTable = [ ["show", "databases"]
+            , ["create", "database"]
+            , ["use", "database"]
+            , ["show", "tables"]
+            , ["create", "table"]
+            , ["query", "table"]
+            , ["delete", "table"]
+            , ["show", "streams"]
+            , ["create", "stream"]
+            , ["query", "stream"]
+            , ["delete", "stream"]
+            ]
 
--- compword  "show" = return $ map simpleCompletion ["database", "stream", "table"]
+-- for complete wordTable command
+generalComplete :: [[String]] -> [String] -> [String]
+generalComplete t [] = nub (map head t)
+generalComplete t (x:[]) = case nub (filter (isPrefixOf x) (map head t)) of
+     [w] | x == w -> 
+          map (\z -> x ++ " " ++ z) (generalComplete (filter (/= []) (map tail (filter (\z -> head z == x) t))) [])
+     ws -> ws
+generalComplete t (x:xs) = --                    remove empty    remove head       filter prefix
+     map (\z -> x ++ " " ++ z) (generalComplete (filter (/= []) (map tail (filter (\z -> head z == x) t))) xs)
+
+-- for complete dbid & tbid
+specificComplete :: Monad m => [String] -> m [String]
+specificComplete _ = return []
+
+compword :: Monad m => String -> m [Completion]
+compword s = do
+     let gs = generalComplete wordTable (words s)
+     cs <- specificComplete (words s)
+     return $ map simpleCompletion (gs <> cs)
 
 main :: IO ()
 main = do 
