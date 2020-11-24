@@ -1,14 +1,10 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DataKinds #-}
+
 module Main where
 
-import Handler
-import Network.Wai.Handler.Warp
+import Handler ( app1 )
+import Network.Wai.Handler.Warp ( run )
 
-main :: IO()
-main = do 
-    print "server start"
-    run 8081 app1
-
+main :: IO ()
+main = do
+  print "server start"
+  run 8081 app1
