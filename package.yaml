@@ -27,26 +27,16 @@ dependencies:
 - servant-server
 - bytestring
 - warp
-- warp-tls
-- mtl
 - aeson
-- constraints
 - time
 - text
 - haskeline
 - http-conduit
-- base64-string
-- base64
-- containers
 - random
-- servant-cli 
-- servant-client 
 - optparse-applicative
 - http-client
-- vinyl
 - uuid
 - pretty-simple
-- singletons
 
 library:
   source-dirs: src
@@ -71,14 +61,3 @@ executables:
     dependencies:
     - hstream-cli
 
-
-tests:
-  hstream-cli-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - hstream-cli
