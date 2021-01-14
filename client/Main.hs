@@ -15,6 +15,7 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
 import Data.Data (Typeable)
 import Data.Proxy (Proxy (..))
+import Data.List
 import Data.Text (pack)
 import GHC.Generics (Generic)
 import Network.HTTP.Simple
