@@ -7,7 +7,7 @@
 
 module Main where
 
-import Control.Exception (try)
+import Control.Exception ( try, SomeException )
 import Control.Monad (void)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Aeson (FromJSON, ToJSON, eitherDecode')
@@ -49,7 +49,6 @@ import System.Console.Haskeline
     CompletionFunc,
     InputT,
     Settings,
-    SomeException,
     completeWord,
     defaultSettings,
     getInputLine,
@@ -107,10 +106,10 @@ wordTable = [ ["show", "databases"]
 -- for complete wordTable command
 generalComplete :: [[String]] -> [String] -> [String]
 generalComplete t [] = nub (map head t)
-generalComplete t (x:[]) = case nub (filter (isPrefixOf x) (map head t)) of
-     [w] | x == w -> 
-          map (\z -> x ++ " " ++ z) (generalComplete (filter (/= []) (map tail (filter (\z -> head z == x) t))) [])
-     ws -> ws
+generalComplete t [x] = case nub (filter (isPrefixOf x) (map head t)) of
+  [w] | x == w ->
+       map (\z -> x ++ " " ++ z) (generalComplete (filter (/= []) (map tail (filter (\z -> head z == x) t))) [])
+  ws -> ws
 generalComplete t (x:xs) = --                    remove empty    remove head       filter prefix
      map (\z -> x ++ " " ++ z) (generalComplete (filter (/= []) (map tail (filter (\z -> head z == x) t))) xs)
 
